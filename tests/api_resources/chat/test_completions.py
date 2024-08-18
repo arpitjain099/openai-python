@@ -6,6 +6,7 @@ import os
 from typing import Any, cast
 
 import pytest
+import pydantic
 
 from openai import OpenAI, AsyncOpenAI
 from tests.utils import assert_matches_type
@@ -47,8 +48,8 @@ class TestCompletions:
             function_call="none",
             functions=[
                 {
-                    "description": "string",
-                    "name": "string",
+                    "name": "name",
+                    "description": "description",
                     "parameters": {"foo": "bar"},
                 }
             ],
@@ -68,31 +69,31 @@ class TestCompletions:
             tool_choice="none",
             tools=[
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
             ],
             top_logprobs=0,
@@ -167,8 +168,8 @@ class TestCompletions:
             function_call="none",
             functions=[
                 {
-                    "description": "string",
-                    "name": "string",
+                    "name": "name",
+                    "description": "description",
                     "parameters": {"foo": "bar"},
                 }
             ],
@@ -187,31 +188,31 @@ class TestCompletions:
             tool_choice="none",
             tools=[
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
             ],
             top_logprobs=0,
@@ -257,6 +258,23 @@ class TestCompletions:
 
         assert cast(Any, response.is_closed) is True
 
+    @parametrize
+    def test_method_create_disallows_pydantic(self, client: OpenAI) -> None:
+        class MyModel(pydantic.BaseModel):
+            a: str
+
+        with pytest.raises(TypeError, match=r"You tried to pass a `BaseModel` class"):
+            client.chat.completions.create(
+                messages=[
+                    {
+                        "content": "string",
+                        "role": "system",
+                    }
+                ],
+                model="gpt-4o",
+                response_format=cast(Any, MyModel),
+            )
+
 
 class TestAsyncCompletions:
     parametrize = pytest.mark.parametrize("async_client", [False, True], indirect=True, ids=["loose", "strict"])
@@ -289,8 +307,8 @@ class TestAsyncCompletions:
             function_call="none",
             functions=[
                 {
-                    "description": "string",
-                    "name": "string",
+                    "name": "name",
+                    "description": "description",
                     "parameters": {"foo": "bar"},
                 }
             ],
@@ -310,31 +328,31 @@ class TestAsyncCompletions:
             tool_choice="none",
             tools=[
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
             ],
             top_logprobs=0,
@@ -409,8 +427,8 @@ class TestAsyncCompletions:
             function_call="none",
             functions=[
                 {
-                    "description": "string",
-                    "name": "string",
+                    "name": "name",
+                    "description": "description",
                     "parameters": {"foo": "bar"},
                 }
             ],
@@ -429,31 +447,31 @@ class TestAsyncCompletions:
             tool_choice="none",
             tools=[
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
                 {
-                    "type": "function",
                     "function": {
-                        "description": "string",
-                        "name": "string",
+                        "name": "name",
+                        "description": "description",
                         "parameters": {"foo": "bar"},
                         "strict": True,
                     },
+                    "type": "function",
                 },
             ],
             top_logprobs=0,
@@ -498,3 +516,20 @@ class TestAsyncCompletions:
             await stream.close()
 
         assert cast(Any, response.is_closed) is True
+
+    @parametrize
+    async def test_method_create_disallows_pydantic(self, async_client: AsyncOpenAI) -> None:
+        class MyModel(pydantic.BaseModel):
+            a: str
+
+        with pytest.raises(TypeError, match=r"You tried to pass a `BaseModel` class"):
+            await async_client.chat.completions.create(
+                messages=[
+                    {
+                        "content": "string",
+                        "role": "system",
+                    }
+                ],
+                model="gpt-4o",
+                response_format=cast(Any, MyModel),
+            )
